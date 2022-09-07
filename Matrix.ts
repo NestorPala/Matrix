@@ -100,10 +100,6 @@ export class Matrix {
         return copy;
     }
 
-    static copyMatrix(matrix: Matrix): Matrix {
-        return new Matrix(Matrix.copyFrom(matrix.values));
-    }
-
     /*  
         Fill with zeroes in the "undefined" positions
         or on the right side of the array (if necessary).
@@ -327,8 +323,8 @@ export class Matrix {
         return this.inverse().equals(this.transpose());
     }
 
-    addColumn(newColumn: Matrix): (Matrix) {
-        return Matrix.copyMatrix(this.transpose().addRow(newColumn).transpose());
+    addColumn(newColumn: Matrix): Matrix {
+        return this.transpose().addRow(newColumn).transpose();
     }
 
     columns(): Matrix[] {
@@ -345,7 +341,8 @@ export class Matrix {
 
     addRow(newRow: Matrix): Matrix {
         if (newRow.columnCount() != this.columnCount() && !this.isEmpty()) {
-            return Matrix.copyMatrix(this);
+            // It's like an error but instead it just "returns the same matrix" without new data
+            return this.multiplyByScalar(1);
         }
         let newValues = Matrix.copyFrom(this.values);
         newValues.push(newRow.values[0]);
@@ -379,7 +376,7 @@ export class Matrix {
         if (this.rowCount() != 1 && this.columnCount() != 1) {
             throw Matrix.MATRIX_NOT_A_VECTOR;
         }
-        let aux = (this.rowCount() != 1) ? this.transpose() : this;
+        let aux = (this.rowCount() == 1) ? this : this.transpose();
         let squaresSum = 0;
         for (let j=0; j<aux.values[0].length; j++) {
             squaresSum += aux.values[0][j] ** 2;
@@ -459,7 +456,7 @@ export class Matrix {
     }
 
     subtract(matrix: Matrix): Matrix {
-        return new Matrix(this.add(matrix.multiplyByScalar(-1)).values);
+        return this.add(matrix.multiplyByScalar(-1));
     }
 
     add(matrix: Matrix): Matrix {
