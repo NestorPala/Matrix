@@ -119,8 +119,8 @@ export class Tests02_Methods {
 
 
         let hh1 = new Matrix([[1,2,3],
-                            [2,8,5],
-                            [3,5,9]]);
+                              [2,8,5],
+                              [3,5,9]]);
         console.log(hh1.isSymmetrical());
 
 
@@ -142,7 +142,9 @@ export class Tests02_Methods {
         console.log(hh5.isSymmetrical());
 
 
-        let or1 = new Matrix([[0.8,0.6,0],[-0.6,0.8,0],[0,0,1]]);
+        let or1 = new Matrix([  [ 0.8, 0.6, 0],
+                                [-0.6, 0.8, 0],
+                                [ 0,   0,   1] ]);
         console.log(or1.isOrthogonal());
 
 
@@ -160,16 +162,28 @@ export class Tests02_Methods {
 
         let p1 = new Matrix([3,4]);
         console.log(p1.pythagorasNorm());
-        console.log(p1.multiplyByScalar( 1/p1.pythagorasNorm() ).pythagorasNorm());
+        console.log(
+            p1.multiplyByScalar( 1/p1.pythagorasNorm() )
+            .pythagorasNorm()
+            == 1
+        );
 
 
         let p2 = new Matrix([[3],[4]]);
         console.log(p2.pythagorasNorm());
-        console.log(p2.multiplyByScalar( 1/p2.pythagorasNorm() ).pythagorasNorm());
+        console.log(
+            p2.multiplyByScalar( 1/p2.pythagorasNorm() )
+            .pythagorasNorm()
+            == 1
+        );
 
         
         let p3 = new Matrix([3,4,5,6,7,8,9,10]);
-        console.log(p3.multiplyByScalar(1 / p3.pythagorasNorm()).pythagorasNorm());
+        console.log(
+            p3.multiplyByScalar(1 / p3.pythagorasNorm())
+            .pythagorasNorm()
+            == 1
+        );
 
 
         let rz = new Matrix([   [3, 6, 0],
@@ -183,23 +197,42 @@ export class Tests02_Methods {
         rz.column(2).toString();
 
 
-        let or11 = new Matrix([[0.8,0.6,0,4],[-0.6,0.8,0,4],[0,0,1,4]]);
+        let or11 = new Matrix([ [ 0.8, 0.6, 0, 4],
+                                [-0.6, 0.8, 0, 4],
+                                [ 0,   0,   1, 4] ]);
         console.log(or11.rowCount());
         console.log(or11.columnCount());
 
 
-        new Matrix([[1,2],[3,4]]).rows().forEach(row => row.toString());
+        new Matrix([[1,2],[3,4]])
+        .rows()
+        .forEach(row => row.toString());
 
 
-        new Matrix([[1,2],[3,4]]).columns().forEach(column => column.toString());
+        new Matrix([[1,2],[3,4]])
+        .columns()
+        .forEach(column => column.toString());
 
 
-        Matrix.empty().addRow(new Matrix([1,2,3,4])).addRow(new Matrix([5,6,7,8])).addRow(new Matrix([9,0,1,2])).toString();
+        Matrix.empty()
+        .addRow(new Matrix([1,2,3,4]))
+        .addRow(new Matrix([5,6,7,8]))
+        .addRow(new Matrix([9,0,1,2]))
+        .toString();
 
 
-        Matrix.empty().addRow(new Matrix([1,2,3,4])).addRow(new Matrix([5,6,7,8])).addRow(new Matrix([9,0,1,2])).transpose().toString();
+        Matrix.empty()
+        .addRow(new Matrix([1,2,3,4]))
+        .addRow(new Matrix([5,6,7,8]))
+        .addRow(new Matrix([9,0,1,2]))
+        .transpose()
+        .toString();
 
 
-        Matrix.empty().addColumn(new Matrix([1,2,3,4])).addColumn(new Matrix([1,2,3,4])).addColumn(new Matrix([1,2,3,4])).toString();
+        Matrix.empty()
+        .addColumn(new Matrix([1,2,3,4]))
+        .addColumn(new Matrix([1,2,3,4]))
+        .addColumn(new Matrix([1,2,3,4]))
+        .toString();
     }
 }

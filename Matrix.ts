@@ -11,7 +11,9 @@ export class Matrix {
     static MATRICES_NOT_MULTIPLIABLE = new Error("Matrices are not multipliable");
     static MATRICES_NOT_SUMMABLE = new Error("Cannot sum matrices of different dimensions");
 
-    values: number[][] = [];
+
+    private values: number[][] = [];
+
 
     constructor(matrixArray?: (number[][] | number[] | number)) {
 
@@ -44,27 +46,24 @@ export class Matrix {
 
     }
 
+
     private isMatrixArrayComplete(matrixArray: number[][]): boolean {
         let maxLength = -1;
-
         for (let i=0; i<matrixArray.length; i++) {
             if (matrixArray[i].length > maxLength) {
                 maxLength = matrixArray[i].length;
             }
         }
-
         // Example: new Matrix([[],[],[]]);
         if (maxLength == 0) {
             return false;
         }
-
         // Example: new Matrix([[1,2],[3,4,5]]);
         for (let i=0; i<matrixArray.length; i++) {
             if (matrixArray[i].length < maxLength) {
                 return false;
             }
         }
-
         // Example: new Matrix([[3,2],[3,,,-1]]);
         for (let i=0; i<matrixArray.length; i++) {
             for (let j=0; j<matrixArray[0].length; j++) {
@@ -73,7 +72,6 @@ export class Matrix {
                 }
             }
         }
-
         return true;
     }
 
@@ -121,7 +119,6 @@ export class Matrix {
     static fillWithZero(matrixArray: IncompleteMatrixArray): number[][] {
         let newValues: number[][] = [];
         let maxLength = 0;
-
         for (let i=0; i<matrixArray.length; i++) {
             newValues[i] = [];
 
@@ -137,14 +134,12 @@ export class Matrix {
                 maxLength = matrixArray[i].length;
             }
         }
-
         for (let i=0; i<newValues.length; i++) {
             let delta = maxLength - newValues[i].length;
             for (let j=0; j<delta; j++) {
                 newValues[i].push(0);
             }
         }
-
         return newValues;
     }
 
@@ -152,7 +147,6 @@ export class Matrix {
         let n=-1, n2=-1;
         let aux: number[] = [];
         let reduced: number[][] = [];
-
         for (let x=0; x<this.rowCount(); x++) {
             for (let y=0; y<this.columnCount(); y++) {
                 if (x != i && y != j) {
@@ -161,7 +155,6 @@ export class Matrix {
                 } 
             }
         }
-
         for (let x=0; x<this.rowCount()-1; x++) {
             reduced[x] = [];
             for (let y=0; y<this.columnCount()-1; y++) {
@@ -169,7 +162,6 @@ export class Matrix {
                 reduced[x][y] = aux[n2];                                               
             }
         }
-
         return new Matrix(reduced);
     }
 
@@ -193,7 +185,8 @@ export class Matrix {
         }
         
         if (this.rowCount() == 2) {
-            total = this.position(0, 0) * this.position(1, 1) - this.position(0, 1) * this.position(1, 0);
+            total = this.position(0, 0) * this.position(1, 1) 
+                  - this.position(0, 1) * this.position(1, 0);
         }
     
         if (this.rowCount() == 3) {
@@ -207,6 +200,10 @@ export class Matrix {
         }
         
         return total;
+    }
+
+    array(): number[][] {
+        return Matrix.copyFrom(this.values);
     }
 
     position(i: number, j: number): number {

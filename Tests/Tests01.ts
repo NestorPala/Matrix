@@ -31,19 +31,23 @@ export class Tests01_Constructor {
 
 
         let m = new Matrix();
-        console.log(m.values);
+        console.log(m.array());
+
+        
+        let g = new Matrix([]);
+        console.log(g.array());
 
 
         let n = new Matrix([[1,2],[3,4]])
-        console.log(n.values);
+        console.log(n.array());
 
 
         let d = new Matrix(1);
-        console.log(d.values);
+        console.log(d.array());
 
 
         let e = new Matrix([1,2,3,4,5]);
-        console.log(e.values);
+        console.log(e.array());
 
 
         //let m1 = [1,2,3,"a"];
@@ -62,16 +66,12 @@ export class Tests01_Constructor {
         //let f4 = new Matrix(m4);
 
 
-        let g = new Matrix([]);
-        console.log(g.values);
-
-
         //let h = new Matrix([[],[]]);
         //let i = new Matrix([[2],[]]);
         //let j = new Matrix([[2,4,5],[6,7,8],[]]);
 
 
         //let k = new Matrix([[2,4,5],[6,7,8],[1,2]]);
-        //console.log(k.values);
+        //console.log(k.array());
     }
 }
