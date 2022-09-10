@@ -1,0 +1,23 @@
+{
+  "name": "matrix",
+  "version": "1.0.0",
+  "description": "Some of its features:\r * Add 2 matrices\r * Multiply 2 matrices\r * Transpose a matrix\r * Calculate the inverse of a matrix\r * Calculate the determinant of a matrix\r * etc.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NestorPala/Matrix.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NestorPala/Matrix/issues"
+  },
+  "homepage": "https://github.com/NestorPala/Matrix#readme",
+  "dependencies": {
+    "jest": "^29.0.3"
+  }
+}

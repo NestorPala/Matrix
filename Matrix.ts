@@ -1,6 +1,8 @@
-export type IncompleteMatrixArray = ( (number | undefined)[] )[];
-
 export class Matrix {
+
+
+    // Errors
+
     static NON_NUMBER_ARRAY_ERROR = new Error("Matrix must only contain numbers");
     static INCOMPLETE_MATRIX_ERROR = new Error("Matrix must contain numbers in every position");
     static NON_SQUARE_MATRIX_ERROR = new Error("Matrix must be square");
@@ -12,8 +14,14 @@ export class Matrix {
     static MATRICES_NOT_SUMMABLE = new Error("Cannot sum matrices of different dimensions");
 
 
+
+    // Matrix positions
+
     private values: number[][] = [];
 
+
+
+    // Creating a Matrix
 
     constructor(matrixArray?: (number[][] | number[] | number)) {
 
@@ -38,7 +46,7 @@ export class Matrix {
         // Example: new Matrix( [[1,2],[3,4]] );
         else if (this.isNumberArrayArray(matrixArray)) 
         {   
-            if (!this.isMatrixArrayComplete(matrixArray)) {
+            if (!this.isCompleteMatrixArray(matrixArray)) {
                 throw Matrix.INCOMPLETE_MATRIX_ERROR;
             }
             this.values = Matrix.copyFrom(matrixArray);
@@ -47,45 +55,8 @@ export class Matrix {
     }
 
 
-    private isMatrixArrayComplete(matrixArray: number[][]): boolean {
-        let maxLength = -1;
-        for (let i=0; i<matrixArray.length; i++) {
-            if (matrixArray[i].length > maxLength) {
-                maxLength = matrixArray[i].length;
-            }
-        }
-        // Example: new Matrix([[],[],[]]);
-        if (maxLength == 0) {
-            return false;
-        }
-        // Example: new Matrix([[1,2],[3,4,5]]);
-        for (let i=0; i<matrixArray.length; i++) {
-            if (matrixArray[i].length < maxLength) {
-                return false;
-            }
-        }
-        // Example: new Matrix([[3,2],[3,,,-1]]);
-        for (let i=0; i<matrixArray.length; i++) {
-            for (let j=0; j<matrixArray[0].length; j++) {
-                if (matrixArray[i][j] === undefined) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
 
-    private isNumberArray(array: unknown[]): array is number[] {
-        return array.every((element) => typeof element === 'number');
-    }
-
-    private isNumberArrayArray(array: unknown[][]): array is number[][] {
-        return array.every((element) => this.isNumberArray(element));
-    }
-
-    static empty(): Matrix {
-        return new Matrix([]);
-    }
+    // Static methods
 
     static copyFrom(matrixArray: number[][]): number[][] {
         let copy: number[][] = [];
@@ -96,6 +67,10 @@ export class Matrix {
             }
         }
         return copy;
+    }
+
+    static empty(): Matrix {
+        return new Matrix([]);
     }
 
     /*  
@@ -143,39 +118,9 @@ export class Matrix {
         return newValues;
     }
 
-    private removeRowAndColumn(i: number, j: number): Matrix {
-        let n=-1, n2=-1;
-        let aux: number[] = [];
-        let reduced: number[][] = [];
-        for (let x=0; x<this.rowCount(); x++) {
-            for (let y=0; y<this.columnCount(); y++) {
-                if (x != i && y != j) {
-                    n++;
-                    aux[n] = this.position(x, y);
-                } 
-            }
-        }
-        for (let x=0; x<this.rowCount()-1; x++) {
-            reduced[x] = [];
-            for (let y=0; y<this.columnCount()-1; y++) {
-                n2++;
-                reduced[x][y] = aux[n2];                                               
-            }
-        }
-        return new Matrix(reduced);
-    }
 
-    private isSquare(): boolean {
-        return this.rowCount() == this.columnCount();
-    }
 
-    private determinantLaplace(): number {
-        let total = 0;
-        for (let i=0; i<this.rowCount(); i++) {
-            total += this.position(0, i) * Math.pow(-1, 0+i) * this.removeRowAndColumn(0, i).determinant();
-        }   
-        return total;
-    }
+    // Private methods
 
     private determinant123(): number {
         let total = 0;
@@ -202,6 +147,76 @@ export class Matrix {
         return total;
     }
 
+    private determinantLaplace(): number {
+        let total = 0;
+        for (let i=0; i<this.rowCount(); i++) {
+            total += this.position(0, i) * Math.pow(-1, 0+i) * this.removeRowAndColumn(0, i).determinant();
+        }   
+        return total;
+    }
+
+    private isCompleteMatrixArray(matrixArray: number[][]): boolean {
+        let maxLength = -1;
+        for (let i=0; i<matrixArray.length; i++) {
+            if (matrixArray[i].length > maxLength) {
+                maxLength = matrixArray[i].length;
+            }
+        }
+        // Example: new Matrix([[],[],[]]);
+        if (maxLength == 0) {
+            return false;
+        }
+        // Example: new Matrix([[1,2],[3,4,5]]);
+        for (let i=0; i<matrixArray.length; i++) {
+            if (matrixArray[i].length < maxLength) {
+                return false;
+            }
+        }
+        // Example: new Matrix([[3,2],[3,,,-1]]);
+        for (let i=0; i<matrixArray.length; i++) {
+            for (let j=0; j<matrixArray[0].length; j++) {
+                if (matrixArray[i][j] === undefined) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private isNumberArray(array: unknown[]): array is number[] {
+        return array.every((element) => typeof element === 'number');
+    }
+
+    private isNumberArrayArray(array: unknown[][]): array is number[][] {
+        return array.every((element) => this.isNumberArray(element));
+    }
+
+    private removeRowAndColumn(i: number, j: number): Matrix {
+        let n=-1, n2=-1;
+        let aux: number[] = [];
+        let reduced: number[][] = [];
+        for (let x=0; x<this.rowCount(); x++) {
+            for (let y=0; y<this.columnCount(); y++) {
+                if (x != i && y != j) {
+                    n++;
+                    aux[n] = this.position(x, y);
+                } 
+            }
+        }
+        for (let x=0; x<this.rowCount()-1; x++) {
+            reduced[x] = [];
+            for (let y=0; y<this.columnCount()-1; y++) {
+                n2++;
+                reduced[x][y] = aux[n2];                                               
+            }
+        }
+        return new Matrix(reduced);
+    }
+
+
+
+    // Literal data methods
+
     array(): number[][] {
         return Matrix.copyFrom(this.values);
     }
@@ -210,8 +225,63 @@ export class Matrix {
         return this.values[i][j];
     }
 
+
+
+    // Row operations
+
+    addRow(newRow: Matrix): Matrix {
+        if (newRow.columnCount() != this.columnCount() && !this.isEmpty()) {
+            // It's like an error but instead it just "returns the same matrix" without new data
+            return this.multiplyByScalar(1);
+        }
+        let newValues = Matrix.copyFrom(this.values);
+        newValues.push(newRow.values[0]);
+        return new Matrix(newValues);
+    }
+
+    row(rowNumber: number): Matrix {
+        if (this.isEmpty()) {
+            return Matrix.empty();
+        }
+        let row: number[] = [];
+        for (let i=0; i<this.columnCount(); i++) {
+            row.push(this.position(rowNumber, i));
+        }
+        return new Matrix([row]);
+    }
+
+    rows(): Matrix[] {
+        let rows : Matrix[] = [];
+        for (let i=0; i<this.rowCount(); i++) {
+            rows.push(this.row(i));
+        }
+        return rows;
+    }
+
     rowCount(): number {
         return this.values.length;
+    }
+
+    /* deleteRow(rowNumber: number): Matrix */
+
+
+
+    // Column operations
+
+    addColumn(newColumn: Matrix): Matrix {
+        return this.transpose().addRow(newColumn).transpose();
+    }
+
+    column(columnNumber: number): Matrix {
+        return this.transpose().row(columnNumber).transpose();
+    }
+
+    columns(): Matrix[] {
+        let columns : Matrix[] = [];
+        for (let i=0; i<this.columnCount(); i++) {
+            columns.push(this.column(i));
+        }
+        return columns;
     }
 
     columnCount(): number {
@@ -221,29 +291,17 @@ export class Matrix {
         return this.values[0].length;
     }
 
-    private isEmpty() {
-        return this.rowCount() == 0;
-    }
+    /* deleteColumn(columnNumber: number): Matrix */
+
+
+
+    // "(Matrix) -> Matrix" operations
 
     adjoint(): Matrix {
         if (this.isEmpty()) {
             throw Matrix.EMPTY_MATRIX_ERROR;
         }
         return this.cofactors().transpose();
-    }
-
-    minors(): Matrix {
-        if (this.isEmpty()) {
-            throw Matrix.EMPTY_MATRIX_ERROR;
-        }
-        let minored: number[][] = [];
-        for (let i=0; i<this.rowCount(); i++) {
-            minored[i] = [];
-            for (let j=0; j<this.columnCount(); j++) {
-                minored[i][j] = this.removeRowAndColumn(i,j).determinant();
-            }
-        }
-        return new Matrix(minored);
     }
 
     cofactors(): Matrix {
@@ -260,17 +318,31 @@ export class Matrix {
         return new Matrix(signMapped).minors();
     }
 
-    trace(): (number | null) {
+    inverse(): Matrix {
         if (this.isEmpty()) {
-            return null;
+            return Matrix.empty();
         }
-        let trace = 0;
+        if (!this.isSquare()) {
+            throw Matrix.NON_SQUARE_MATRIX_ERROR;
+        }
+        if (this.determinant() == 0) {
+            throw Matrix.SINGULAR_MATRIX_ERROR;
+        }
+        return this.adjoint().multiplyByScalar(1 / this.determinant());
+    }
+
+    minors(): Matrix {
+        if (this.isEmpty()) {
+            throw Matrix.EMPTY_MATRIX_ERROR;
+        }
+        let minored: number[][] = [];
         for (let i=0; i<this.rowCount(); i++) {
+            minored[i] = [];
             for (let j=0; j<this.columnCount(); j++) {
-                trace += (i == j) ? this.position(i, j) : 0;
+                minored[i][j] = this.removeRowAndColumn(i,j).determinant();
             }
         }
-        return trace;
+        return new Matrix(minored);
     }
 
     transpose(): Matrix {
@@ -287,84 +359,20 @@ export class Matrix {
         return new Matrix(transposed);
     }
 
-    dimensionsEquals(matrix: Matrix): boolean {
-        if ((this.isEmpty() && !matrix.isEmpty()) || (!this.isEmpty() && matrix.isEmpty())) {
-            return false;
-        } 
-        if (this.isEmpty() && matrix.isEmpty()) {
-            return true;
-        }
-        return this.rowCount() == matrix.rowCount() 
-            && this.columnCount() == matrix.columnCount();
-    }
 
-    equals(matrix: Matrix): boolean {
-        if (!this.dimensionsEquals(matrix)) {
-            return false;
-        }
-        for (let i=0; i<this.rowCount(); i++) {
-            for (let j=0; j<this.columnCount(); j++) {
-                if (this.position(i, j) != matrix.position(i, j)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
 
-    isSymmetrical(): boolean {
-        return this.equals(this.transpose());
-    }
+    // "(Matrix) -> Number" operations
 
-    isOrthogonal(): boolean {
-        return this.inverse().equals(this.transpose());
-    }
-
-    addColumn(newColumn: Matrix): Matrix {
-        return this.transpose().addRow(newColumn).transpose();
-    }
-
-    columns(): Matrix[] {
-        let columns : Matrix[] = [];
-        for (let i=0; i<this.columnCount(); i++) {
-            columns.push(this.column(i));
-        }
-        return columns;
-    }
-
-    column(columnNumber: number): Matrix {
-        return this.transpose().row(columnNumber).transpose();
-    }
-
-    addRow(newRow: Matrix): Matrix {
-        if (newRow.columnCount() != this.columnCount() && !this.isEmpty()) {
-            // It's like an error but instead it just "returns the same matrix" without new data
-            return this.multiplyByScalar(1);
-        }
-        let newValues = Matrix.copyFrom(this.values);
-        newValues.push(newRow.values[0]);
-        return new Matrix(newValues);
-    }
-
-    rows(): Matrix[] {
-        let rows : Matrix[] = [];
-        for (let i=0; i<this.rowCount(); i++) {
-            rows.push(this.row(i));
-        }
-        return rows;
-    }
-
-    row(rowNumber: number): Matrix {
+    determinant(): number {
         if (this.isEmpty()) {
-            return Matrix.empty();
+            return 1;
         }
-        let row: number[] = [];
-        for (let i=0; i<this.columnCount(); i++) {
-            row.push(this.position(rowNumber, i));
+        if (!this.isSquare()) {
+            throw Matrix.NON_SQUARE_MATRIX_ERROR;
         }
-        return new Matrix([row]);
+        return this.rowCount() < 4 ? this.determinant123() : this.determinantLaplace();
     }
-
+    
     // Can calculate for Nx1 and 1xN
     pythagorasNorm(): number {
         if (this.isEmpty()) {
@@ -381,37 +389,42 @@ export class Matrix {
         return Math.sqrt(squaresSum);
     }
 
-    determinant(): number {
+    trace(): (number | null) {
         if (this.isEmpty()) {
-            return 1;
+            return null;
         }
-        if (!this.isSquare()) {
-            throw Matrix.NON_SQUARE_MATRIX_ERROR;
+        let trace = 0;
+        for (let i=0; i<this.rowCount(); i++) {
+            for (let j=0; j<this.columnCount(); j++) {
+                trace += (i == j) ? this.position(i, j) : 0;
+            }
         }
-        return this.rowCount() < 4 ? this.determinant123() : this.determinantLaplace();
+        return trace;
     }
 
-    pow(exponent: number): Matrix {
+
+
+    // "(Matrix, Matrix) -> Matrix" operations
+
+    subtract(matrix: Matrix): Matrix {
+        return this.sum(matrix.multiplyByScalar(-1));
+    }
+
+    sum(matrix: Matrix): Matrix {
         if (this.isEmpty()) {
             return Matrix.empty();
         }
-        if (!this.isSquare()) {
-            throw Matrix.NON_SQUARE_MATRIX_ERROR;
+        if (!this.dimensionsEquals(matrix)) {
+            throw Matrix.MATRICES_NOT_SUMMABLE;
         }
-        if (exponent % 1 != 0) {
-            throw Matrix.NOT_INTEGER_EXPONENT_ERROR;
+        let scaledValues: number[][] = [];
+        for (let i=0; i<this.rowCount(); i++) {
+            scaledValues[i] = [];
+            for (let j=0; j<this.columnCount(); j++) {
+                scaledValues[i][j] = this.position(i, j) + matrix.position(i, j);
+            }
         }
-        if (exponent == 0) {
-            return this.multiplyByMatrix(this.inverse());
-        }
-        if (exponent < 0) {
-            return this.inverse().pow(Math.abs(exponent));
-        }
-        let newMatrix: Matrix = this;
-        for(let n=1; n<exponent; n++) {
-            newMatrix = newMatrix.multiplyByMatrix(this);
-        }
-        return newMatrix;
+        return new Matrix(scaledValues);
     }
 
     multiplyByMatrix(matrix: Matrix): Matrix {
@@ -438,6 +451,10 @@ export class Matrix {
         return new Matrix(newValues);
     }
 
+
+
+    // "(Matrix, Number) -> Matrix" operations
+
     multiplyByScalar(scalar: number): Matrix {
         if (this.isEmpty()) {
             return Matrix.empty();
@@ -452,39 +469,81 @@ export class Matrix {
         return new Matrix(scaledValues);
     }
 
-    subtract(matrix: Matrix): Matrix {
-        return this.add(matrix.multiplyByScalar(-1));
-    }
-
-    add(matrix: Matrix): Matrix {
-        if (this.isEmpty()) {
-            return Matrix.empty();
-        }
-        if (!this.dimensionsEquals(matrix)) {
-            throw Matrix.MATRICES_NOT_SUMMABLE;
-        }
-        let scaledValues: number[][] = [];
-        for (let i=0; i<this.rowCount(); i++) {
-            scaledValues[i] = [];
-            for (let j=0; j<this.columnCount(); j++) {
-                scaledValues[i][j] = this.position(i, j) + matrix.position(i, j);
-            }
-        }
-        return new Matrix(scaledValues);
-    }
-
-    inverse(): Matrix {
+    pow(exponent: number): Matrix {
         if (this.isEmpty()) {
             return Matrix.empty();
         }
         if (!this.isSquare()) {
             throw Matrix.NON_SQUARE_MATRIX_ERROR;
         }
-        if (this.determinant() == 0) {
-            throw Matrix.SINGULAR_MATRIX_ERROR;
+        if (exponent % 1 != 0) {
+            throw Matrix.NOT_INTEGER_EXPONENT_ERROR;
         }
-        return this.adjoint().multiplyByScalar(1 / this.determinant());
+        if (exponent == 0) {
+            return this.multiplyByMatrix(this.inverse());
+        }
+        if (exponent < 0) {
+            return this.inverse().pow(Math.abs(exponent));
+        }
+        let newMatrix: Matrix = this;
+        for(let n=1; n<exponent; n++) {
+            newMatrix = newMatrix.multiplyByMatrix(this);
+        }
+        return newMatrix;
     }
+
+
+
+    // Equality-check methods
+
+    dimensionsEquals(matrix: Matrix): boolean {
+        if ((this.isEmpty() && !matrix.isEmpty()) || (!this.isEmpty() && matrix.isEmpty())) {
+            return false;
+        } 
+        if (this.isEmpty() && matrix.isEmpty()) {
+            return true;
+        }
+        return this.rowCount() == matrix.rowCount() 
+            && this.columnCount() == matrix.columnCount();
+    }
+
+    equals(matrix: Matrix): boolean {
+        if (!this.dimensionsEquals(matrix)) {
+            return false;
+        }
+        for (let i=0; i<this.rowCount(); i++) {
+            for (let j=0; j<this.columnCount(); j++) {
+                if (this.position(i, j) != matrix.position(i, j)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
+
+    // Status-check methods
+
+    isEmpty(): boolean {
+        return this.rowCount() == 0;
+    }
+
+    isSquare(): boolean {
+        return this.rowCount() == this.columnCount();
+    }
+
+    isOrthogonal(): boolean {
+        return this.inverse().equals(this.transpose());
+    }
+
+    isSymmetrical(): boolean {
+        return this.equals(this.transpose());
+    }
+
+
+
+    // Output
 
     toString(): void {
         if (this.isEmpty()) {
@@ -510,3 +569,7 @@ export class Matrix {
     }
 
 }
+
+
+
+export type IncompleteMatrixArray = ( (number | undefined)[] )[];
