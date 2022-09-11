@@ -8,8 +8,9 @@ Some of its features:
 * Calculate the determinant of a matrix
 * etc.
 
+Currently working on:
+* Unit Tests using Jest
+
 Coming soon:
-* Unit Tests using some testing framework (probably Jest)
-  * Should've done the tests first XD
 * Integration on a REST API using Node.js / Express.js
 * Matrix REST API consumption via Angular front-end web page
