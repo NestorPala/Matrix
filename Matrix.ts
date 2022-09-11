@@ -1,10 +1,9 @@
-class Matrix {
+export class Matrix {
 
 
     // Errors
 
-    static NON_NUMBER_ARRAY_ERROR = new Error("Matrix must only contain numbers");
-    static INCOMPLETE_MATRIX_ERROR = new Error("Matrix must contain numbers in every position");
+    static INVALID_MATRIX_ERROR = new Error("Matrix is not valid");
     static NON_SQUARE_MATRIX_ERROR = new Error("Matrix must be square");
     static SINGULAR_MATRIX_ERROR = new Error("Matrix is singular");
     static NOT_INTEGER_EXPONENT_ERROR = new Error("Exponent must be integer");
@@ -25,8 +24,12 @@ class Matrix {
 
     constructor(matrixArray?: (number[][] | number[] | number)) {
 
+        if (typeof matrixArray === "string") {
+            throw Matrix.INVALID_MATRIX_ERROR;
+        }
+
         // Example: new Matrix();
-        if (matrixArray === undefined) 
+        if (matrixArray == null) 
         {
             this.values = [];
         }
@@ -47,9 +50,13 @@ class Matrix {
         else if (this.isNumberArrayArray(matrixArray)) 
         {   
             if (!this.isCompleteMatrixArray(matrixArray)) {
-                throw Matrix.INCOMPLETE_MATRIX_ERROR;
+                throw Matrix.INVALID_MATRIX_ERROR;
             }
             this.values = Matrix.copyFrom(matrixArray);
+        }
+
+        else {
+            throw Matrix.INVALID_MATRIX_ERROR;
         }
 
     }
@@ -184,7 +191,12 @@ class Matrix {
     }
 
     private isNumberArray(array: unknown[]): array is number[] {
-        return array.every((element) => typeof element === 'number');
+        try {
+            return array.every((element) => typeof element === 'number');
+        } catch {
+            throw Matrix.INVALID_MATRIX_ERROR;
+        }
+        
     }
 
     private isNumberArrayArray(array: unknown[][]): array is number[][] {
@@ -573,7 +585,3 @@ class Matrix {
 
 
 type IncompleteMatrixArray = ( (number | undefined)[] )[];
-
-
-
-module.exports = Matrix;
