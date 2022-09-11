@@ -1,4 +1,4 @@
-export class Matrix {
+class Matrix {
 
 
     // Errors
@@ -58,7 +58,7 @@ export class Matrix {
 
     // Static methods
 
-    static copyFrom(matrixArray: number[][]): number[][] {
+    private static copyFrom(matrixArray: number[][]): number[][] {
         let copy: number[][] = [];
         for (let i=0; i<matrixArray.length; i++) {
             copy[i] = [];
@@ -69,7 +69,7 @@ export class Matrix {
         return copy;
     }
 
-    static empty(): Matrix {
+    public static empty(): Matrix {
         return new Matrix([]);
     }
 
@@ -91,7 +91,7 @@ export class Matrix {
         Result of processing the example above:
         [[1,2,3,0],[0,2,3,0],[2,3,0,0],[1,0,3,0],[1,2,0,0],[1,2,0,0],[0,0,3,0],[3,0,0,0],[1,0,0,0],[1,0,0,0],[0,2,0,0],[2,0,0,0],[0,0,0,0],[0,0,0,0]]
     */
-    static fillWithZero(matrixArray: IncompleteMatrixArray): number[][] {
+    public static fillWithZero(matrixArray: IncompleteMatrixArray): number[][] {
         let newValues: number[][] = [];
         let maxLength = 0;
         for (let i=0; i<matrixArray.length; i++) {
@@ -572,4 +572,8 @@ export class Matrix {
 
 
 
-export type IncompleteMatrixArray = ( (number | undefined)[] )[];
+type IncompleteMatrixArray = ( (number | undefined)[] )[];
+
+
+
+module.exports = Matrix;
